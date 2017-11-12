@@ -34,8 +34,6 @@ def main():
   )
   
   forum = AnsibleForumSentry( module )
-  
-  result = dict(changed=False)
 
   if module.check_mode:
     return result
