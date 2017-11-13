@@ -10,22 +10,22 @@ def main():
   module_args = dict(
     name			= dict( type ='str' ),
     createSignerGroup 		= dict( type ='bool' ),
-    fileIntegrityPassword	= dict( type ='str' ),
     password			= dict( type ='str' ),
-    keyAndCertificateFile	= dict( type ='str' )
+    certificateFile		= dict( type ='str' ),
+    keyFile			= dict( type ='str' )
   )
 
   module_args.update(forum_sentry_argument_spec)
 
-  sentryPkcs12_required_if = [
-    [ 'state' , 'present' , [ 'name' , 'createSignerGroup' , 'fileIntegrityPassword' , 'password' , 'keyAndCertificateFile' ] ] ,
+  sentry_required_if = [
+    [ 'state' , 'present' , [ 'name' , 'createSignerGroup' , 'password' , 'certificateFile' , 'keyFile'  ] ] ,
     [ 'state' , 'absent' , [ 'name' ] ]
   ]
 
   module = AnsibleModule(
     argument_spec=module_args,
     supports_check_mode=True,
-    required_if=sentryPkcs12_required_if,
+    required_if=sentry_required_if,
     required_together=forum_sentry_required_together
   )
   
@@ -37,13 +37,12 @@ def main():
   httpService_KeyPair = '/restApi/v1.0/policies/keyPairs'
   httpService_Certificates = '/restApi/v1.0/policies/x509Certificates'
   httpService_SignerGroups = '/restApi/v1.0/policies/signerGroups'
-  httpService_Pkcs12 = '/restApi/v1.0/policies/keyPairs/import/pkcs12'
+  httpService_Pkcs1OrPkcs8 = '/restApi/v1.0/policies/keyPairs/import/pkcs1OrPkcs8'
 
-  formHeaderKeys = 'keyAndCertificateFile'
+  formHeaderKeys = 'certificateFile,keyFile'
  
   if module.params['state'] == 'present': 
-#    forum.importPkcs12()
-    forum.importSentryObject( httpService_Pkcs12 , formHeaderKeys )
+    forum.importSentryObject( httpService_Pkcs1OrPkcs8 , formHeaderKeys )
   else:
     signerGroups = forum.getSentryObject( httpService_SignerGroups , module.params['name'] )
     certificates = forum.getSentryObject( httpService_Certificates , module.params['name'] )
@@ -51,15 +50,15 @@ def main():
 
     if signerGroups:
       for signerGroup in signerGroups:
-        forum.deleteSentryObject( httpService_SignerGroups  , signerGroup ) 
+        forum.deleteSentryObject( httpService_SignerGroups , signerGroup ) 
 
     if certificates:
       for certificate in certificates:
-        forum.deleteSentryObject( httpService_Certificates  , certificate )
+        forum.deleteSentryObject( httpService_Certificates , certificate )
 
     if keyPairs:
       for keyPair in keyPairs:
-        forum.deleteSentryObject( httpService_KeyPair  , keyPair )
+        forum.deleteSentryObject( httpService_KeyPair , keyPair )
 
   module.exit_json(**forum.result)
 
