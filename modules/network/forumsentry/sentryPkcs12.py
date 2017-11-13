@@ -6,10 +6,6 @@ from ansible.module_utils.forumsentry import forum_sentry_required_together
 from ansible.module_utils.forumsentry import AnsibleForumSentry
 
 def main():
-  
-  httpService_KeyPair = '/restApi/v1.0/policies/keyPairs'
-  httpService_Certificates = '/restApi/v1.0/policies/x509Certificates'
-  httpService_SignerGroups = '/restApi/v1.0/policies/signerGroups'
 
   module_args = dict(
     name			= dict( type ='str' ),
@@ -37,9 +33,17 @@ def main():
 
   if module.check_mode:
     return result
-  
+ 
+  httpService_KeyPair = '/restApi/v1.0/policies/keyPairs'
+  httpService_Certificates = '/restApi/v1.0/policies/x509Certificates'
+  httpService_SignerGroups = '/restApi/v1.0/policies/signerGroups'
+  httpService_Pkcs12 = '/restApi/v1.0/policies/keyPairs/import/pkcs12'
+
+  formHeaderKeys = 'keyAndCertificateFile'
+ 
   if module.params['state'] == 'present': 
-    forum.importPkcs12()
+#    forum.importPkcs12()
+    forum.importSentryObject( httpService_Pkcs12 , formHeaderKeys )
   else:
     signerGroups = forum.getSentryObject( httpService_SignerGroups , module.params['name'] )
     certificates = forum.getSentryObject( httpService_Certificates , module.params['name'] )

@@ -56,7 +56,7 @@ class AnsibleForumSentry( object ):
       self.result['changed'] = False
     else:
       self.module.fail_json( msg='Unable to delete ' + service.rsplit('/', 1)[-1] + ': ' + str( httpDelete.status_code ) + ' - ' + httpDelete.text )
-
+    
 
   def getSentryObject( self , service , name ):
     
@@ -75,87 +75,28 @@ class AnsibleForumSentry( object ):
       self.module.fail_json( msg='Unable to get ' + service.rsplit('/', 1)[-1] + ': ' + str( httpGet.status_code ) + ' - ' + httpGet.text )
 
 
-  def importFileX509OrPkcs7( self ):
-
-    formValues={}
+  def importSentryObject( self , service , keys='' ):
+            
+    formValues = {}
 
     for key in self.module.argument_spec:
-      if ( key not in forum_sentry_argument_spec ) and ( key != 'certificateFile' ):
+      if ( key not in forum_sentry_argument_spec ) and ( key not in keys ):
         formValues[key] = self.module.params[key]
+      
+    if keys:
 
-    keyFile = open( self.module.params['certificateFile'], 'rb' )
-    fileValues={ 'certificateFile' : keyFile }
+      file = ''
+      fileValues = {}      
 
-    try:
-      self.createSentryObject( '/restApi/v1.0/policies/keyPairs/import/fileX509OrPkcs7' , formValues , fileValues )
-    finally:
-      keyFile.close()
+      # Some nasty ass code up in here... fix it!
+      for key in keys.split('|'):
+        file = open( self.module.params[key] , 'rb' )
+        fileValues[key] = file
+      
+      try:
+        self.createSentryObject( service , formValues , fileValues )
+      finally:
+        file.close()
 
-
-  def importJksStore( self ):
-
-    formValues={}
-
-    for key in self.module.argument_spec:
-      if ( key not in forum_sentry_argument_spec ) and ( key != 'keyStoreFile' ):
-        formValues[key] = self.module.params[key]
-
-    keyFile = open( self.module.params['keyStoreFile'], 'rb' )
-    fileValues={ 'keyStoreFile' : keyFile }
-
-    try:
-      self.self.createSentryObject( '/restApi/v1.0/policies/keyPairs/import/jksStore' , formValues , fileValues )
-    finally:
-      keyFile.close()
-
-
-  def importLdapX509OrPkcs7( self ):
-
-    formValues={}
-
-    for key in self.module.argument_spec:
-      if ( key not in forum_sentry_argument_spec ):
-        formValues[key] = self.module.params[key]
-
-    self.createSentryObject( '/restApi/v1.0/policies/keyPairs/import/ldapX509OrPkcs7' , formValues )
-
-
-  def importPkcs1OrPkcs8( self ):
-
-    formValues={}
-
-    for key in self.module.argument_spec:
-      if ( key not in forum_sentry_argument_spec ):
-        if ( key != 'keyStoreFile' ) or ( key != 'certificateFile' ):
-          formValues[key] = self.module.params[key]
-
-    certificateFile = open( self.module.params['certificateFile'] , 'rb' )
-    keyFile = open( self.module.params['keyFile'] , 'rb' )
-
-    fileValues={ 'keyFile' : keyFile, 'certificateFile' : certificateFile }
-
-    try:
-       self.createSentryObject( '/restApi/v1.0/policies/keyPairs/import/pkcs1OrPkcs8' , formValues , fileValues )
-    finally:
-      certificateFile.close()
-      keyFile.close()
-
-
-  def importPkcs12( self ):
-  
-    service = '/restApi/v1.0/policies/keyPairs/import/pkcs12'
-  
-    formValues={}
-	
-    for key in self.module.argument_spec:
-      if ( key not in forum_sentry_argument_spec ) and ( key != 'keyAndCertificateFile' ):
-        formValues[key] = self.module.params[key]
-    
-    keyFile = open( self.module.params['keyAndCertificateFile'], 'rb' )
-    fileValues={ 'keyAndCertificateFile' : keyFile }
-
-    try:
-      self.createSentryObject( '/restApi/v1.0/policies/keyPairs/import/pkcs12' , formValues , fileValues )
-    finally:
-      keyFile.close()
-
+    else:
+      self.createSentryObject( service , formValues )
