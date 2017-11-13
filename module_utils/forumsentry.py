@@ -20,13 +20,11 @@ forum_sentry_required_together = [
 
 class AnsibleForumSentry( object ):
 
-
   def __init__( self , module ):
     self.module = module
     self.result = { 'changed' : False }
     self.__url = self.module.params['sentryProtocol'] + "://" + self.module.params['sentryHost'] + ":" + str( self.module.params['sentryPort'] )
     self.__auth = auth=( self.module.params['sentryUsername'] , self.module.params['sentryPassword'] )
-
 
   def createSentryObject( self , service , data , files={} , isJson=False):    
 
@@ -44,7 +42,6 @@ class AnsibleForumSentry( object ):
       self.result['changed'] = False
     else:
       self.module.fail_json( msg='Unable to import ' + service.rsplit('/', 1)[-1] + ': ' + str( httpPost.status_code ) + ' - ' + httpPost.text )
-
   
   def deleteSentryObject( self , service , name ):
   
@@ -56,7 +53,6 @@ class AnsibleForumSentry( object ):
       self.result['changed'] = False
     else:
       self.module.fail_json( msg='Unable to delete ' + service.rsplit('/', 1)[-1] + ': ' + str( httpDelete.status_code ) + ' - ' + httpDelete.text )
-    
 
   def getSentryObject( self , service , name ):
     
@@ -73,7 +69,6 @@ class AnsibleForumSentry( object ):
       return itemsList
     else:
       self.module.fail_json( msg='Unable to get ' + service.rsplit('/', 1)[-1] + ': ' + str( httpGet.status_code ) + ' - ' + httpGet.text )
-
 
   def importSentryObject( self , service , keys='' ):
             
