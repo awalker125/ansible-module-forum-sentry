@@ -43,7 +43,6 @@ def main():
   else:
     signerGroups = forum.getSentryObject( httpService_SignerGroups , module.params['name'] )
     certificates = forum.getSentryObject( httpService_Certificates , module.params['name'] )
-    keyPairs = forum.getSentryObject( httpService_KeyPair , module.params['name'] )
 
     if signerGroups:
       for signerGroup in signerGroups:
