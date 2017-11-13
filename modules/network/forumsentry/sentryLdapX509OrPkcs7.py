@@ -9,24 +9,33 @@ def main():
 
   module_args = dict(
     name			= dict( type ='str' ),
+    ldapAttribute		= dict( type ='str' ),
+    ldapQuery			= dict( type ='str' ),
+    ldapServer			= dict( type ='str' ),
+    port			= dict( type ='int' ),
+    authenticateServer		= dict( type ='bool' ),
     createSignerGroup 		= dict( type ='bool' ),
-    fileIntegrityPassword	= dict( type ='str' ),
+    user			= dict( type ='str' ),
     password			= dict( type ='str' ),
-    keyAndCertificateFile	= dict( type ='str' )
+    useSSL			= dict( type ='bool' )
   )
 
   module_args.update(forum_sentry_argument_spec)
 
   sentry_required_if = [
-    [ 'state' , 'present' , [ 'name' , 'createSignerGroup' , 'fileIntegrityPassword' , 'password' , 'keyAndCertificateFile' ] ] ,
+    [ 'state' , 'present' , [ 'name' , 'ldapAttribute' , 'ldapQuery' , 'ldapServer' , 'port' ] ] ,
     [ 'state' , 'absent' , [ 'name' ] ]
+  ]
+
+  ldapX509OrPkcs7_required_together = [
+    [ 'user', 'password' ]
   ]
 
   module = AnsibleModule(
     argument_spec=module_args,
     supports_check_mode=True,
     required_if=sentry_required_if,
-    required_together=forum_sentry_required_together
+    required_together=forum_sentry_required_together + ldapX509OrPkcs7_required_together
   )
   
   forum = AnsibleForumSentry( module )
@@ -37,13 +46,10 @@ def main():
   httpService_KeyPair = '/restApi/v1.0/policies/keyPairs'
   httpService_Certificates = '/restApi/v1.0/policies/x509Certificates'
   httpService_SignerGroups = '/restApi/v1.0/policies/signerGroups'
-  httpService_Pkcs12 = '/restApi/v1.0/policies/keyPairs/import/pkcs12'
+  httpService_LdapX509OrPkcs7 = '/restApi/v1.0/policies/keyPairs/import/ldapX509OrPkcs7'
 
-  formHeaderKeys = 'keyAndCertificateFile'
- 
   if module.params['state'] == 'present': 
-#    forum.importPkcs12()
-    forum.importSentryObject( httpService_Pkcs12 , formHeaderKeys )
+    forum.importSentryObject( httpService_LdapX509OrPkcs7 )
   else:
     signerGroups = forum.getSentryObject( httpService_SignerGroups , module.params['name'] )
     certificates = forum.getSentryObject( httpService_Certificates , module.params['name'] )
