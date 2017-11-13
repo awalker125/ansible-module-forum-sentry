@@ -42,7 +42,6 @@ def main():
   formHeaderKeys = 'keyAndCertificateFile'
  
   if module.params['state'] == 'present': 
-#    forum.importPkcs12()
     forum.importSentryObject( httpService_Pkcs12 , formHeaderKeys )
   else:
     signerGroups = forum.getSentryObject( httpService_SignerGroups , module.params['name'] )
