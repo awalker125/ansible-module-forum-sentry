@@ -17,7 +17,7 @@ def main():
 
   module_args.update(forum_sentry_argument_spec)
 
-  sentry_required_if = [
+  sentryPkcs12_required_if = [
     [ 'state' , 'present' , [ 'name' , 'createSignerGroup' , 'fileIntegrityPassword' , 'password' , 'keyAndCertificateFile' ] ] ,
     [ 'state' , 'absent' , [ 'name' ] ]
   ]
@@ -25,7 +25,7 @@ def main():
   module = AnsibleModule(
     argument_spec=module_args,
     supports_check_mode=True,
-    required_if=sentry_required_if,
+    required_if=sentryPkcs12_required_if,
     required_together=forum_sentry_required_together
   )
   
@@ -42,6 +42,7 @@ def main():
   formHeaderKeys = 'keyAndCertificateFile'
  
   if module.params['state'] == 'present': 
+#    forum.importPkcs12()
     forum.importSentryObject( httpService_Pkcs12 , formHeaderKeys )
   else:
     signerGroups = forum.getSentryObject( httpService_SignerGroups , module.params['name'] )

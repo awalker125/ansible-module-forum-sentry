@@ -28,23 +28,25 @@ class AnsibleForumSentry( object ):
     self.__auth = auth=( self.module.params['sentryUsername'] , self.module.params['sentryPassword'] )
 
 
-  def createSentryObject( self , service , data , files={} , isJson=False):    
+  def createSentryObject( self , service ):
 
-    if files:
-      httpPost = requests.post( self.__url + service , auth=self.__auth , files=files, data=data, verify=True )
-    else:
-      if isJson:
-        httpPost = requests.post( self.__url + service , auth=self.__auth , data=data, verify=True , headers={ 'Content-Type': 'application/json' } )
-      else:
-        httpPost = requests.post( self.__url + service , auth=self.__auth , data=data, verify=True )
+    jsonMessage={}
 
-    if ( httpPost.status_code == 202 ):
+    for key in self.module.argument_spec:
+      if key not in forum_sentry_argument_spec:
+        jsonMessage[key] = self.module.params[key]
+
+    message = json.dumps( jsonMessage )
+
+    httpPost = requests.post( self.__url + service , auth=self.__auth , data=message, verify=True , headers={ 'Content-Type': 'application/json' } )   
+
+    if ( httpPost.status_code == 201 ):
       self.result['changed'] = True
     elif ( httpPost.status_code == 409 ):
       self.result['changed'] = False
     else:
-      self.module.fail_json( msg='Unable to import ' + service.rsplit('/', 1)[-1] + ': ' + str( httpPost.status_code ) + ' - ' + httpPost.text )
-
+      self.module.fail_json( msg='Unable to create ' + name + ': ' + str( httpPost.status_code ) + ' - ' + httpPost.text )
+ 
   
   def deleteSentryObject( self , service , name ):
   
@@ -76,27 +78,33 @@ class AnsibleForumSentry( object ):
 
 
   def importSentryObject( self , service , keys='' ):
-            
+    
+    file = ''
+    fileValues = {}        
     formValues = {}
 
     for key in self.module.argument_spec:
       if ( key not in forum_sentry_argument_spec ) and ( key not in keys ):
         formValues[key] = self.module.params[key]
       
-    if keys:
-
-      file = ''
-      fileValues = {}      
-
-      # Some nasty ass code up in here... fix it!
-      for key in keys.split(','):
-        file = open( self.module.params[key] , 'rb' )
-        fileValues[key] = file
+    # Some nasty ass code up in here... fix it!
+    for key in keys.split(','):
+      file = open( self.module.params[key] , 'rb' )
+      fileValues[key] = file
       
-      try:
-        self.createSentryObject( service , formValues , fileValues )
-      finally:
-        file.close()
+    try:
+      if fileValues:
+        httpPost = requests.post( self.__url + service , auth=self.__auth , files=fileValues , data=formValues , verify=True )
+      else:
+        httpPost = requests.post( self.__url + service , auth=self.__auth , data=formValues , verify=True )
+ 
+      if ( httpPost.status_code == 202 ):
+        self.result['changed'] = True
+      elif ( httpPost.status_code == 409 ):
+        self.result['changed'] = False
+      else:
+        self.module.fail_json( msg='Unable to import ' + service.rsplit('/', 1)[-1] + ': ' + str( httpPost.status_code ) + ' - ' + httpPost.text )
 
-    else:
-      self.createSentryObject( service , formValues )
+    finally:
+      file.close()
+
