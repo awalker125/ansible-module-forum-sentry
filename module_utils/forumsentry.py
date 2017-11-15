@@ -45,7 +45,7 @@ class AnsibleForumSentry( object ):
     elif ( httpPost.status_code == 409 ):
       self.result['changed'] = False
     else:
-      self.module.fail_json( msg='Unable to create ' + name + ': ' + str( httpPost.status_code ) + ' - ' + httpPost.text )
+      self.module.fail_json( msg='Unable to create ' + self.module.params['name'] + ': ' + str( httpPost.status_code ) + ' - ' + httpPost.text )
  
   
   def deleteSentryObject( self , service , name ):
