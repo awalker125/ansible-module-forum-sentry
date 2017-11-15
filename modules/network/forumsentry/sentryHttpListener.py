@@ -2,12 +2,13 @@
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.forumsentry import forum_sentry_argument_spec
+from ansible.module_utils.forumsentry import forum_sentry_required_together
 from ansible.module_utils.forumsentry import AnsibleForumSentry
 
 def main():
 
   module_args = dict(
-    name                                = dict(type ='str',  required=True),
+    name                                = dict(type ='str'),
     aclPolicy                           = dict(type ='str',  default=''),
     description                         = dict(type ='str',  default=''),
     enabled                             = dict(type ='bool', default=True),
@@ -33,9 +34,20 @@ def main():
 
   module_args.update(forum_sentry_argument_spec)
 
+  sentry_required_if = [
+    [ 'state' , 'present' , [ 'name' , 'port' ] ] ,
+    [ 'state' , 'absent' , [ 'name' ] ]
+  ]
+
+  ssl_policy_required_together = [
+    [ 'listenerSSLEnabled' , 'listenerSSLPolicy' ]
+  ]
+
   module = AnsibleModule(
     argument_spec=module_args,
-    supports_check_mode=True
+    supports_check_mode=True,
+    required_if=sentry_required_if,
+    required_together=forum_sentry_required_together + ssl_policy_required_together
   )
 
   forum = AnsibleForumSentry( module )
