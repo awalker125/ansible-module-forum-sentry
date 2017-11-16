@@ -34,7 +34,10 @@ class AnsibleForumSentry( object ):
 
     for key in self.module.argument_spec:
       if key not in forum_sentry_argument_spec:
-        jsonMessage[key] = self.module.params[key]
+        if self.module.params[key] is None:
+          jsonMessage.pop(key, None)
+        else:
+          jsonMessage[key] = self.module.params[key]
 
     message = json.dumps( jsonMessage )
 
