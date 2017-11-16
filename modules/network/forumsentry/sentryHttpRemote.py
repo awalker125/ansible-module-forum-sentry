@@ -8,20 +8,20 @@ from ansible.module_utils.forumsentry import AnsibleForumSentry
 def main():
 
   module_args = dict(
-    name                                = dict( type = 'str' ),
-    remoteServer			= dict( type = 'str' ), 
-    remotePort				= dict( type = 'int' ),
-    enabled				= dict( type = 'bool' 	, default = True ),
-    useBasicAuth 			= dict( type = 'bool' 	, default = False ),
-    proxyPolicy 			= dict( type = 'str' 	, default = ''),
-    SSLInitiationPolicy 		= dict( type = 'str' 	, default = '' ),
-    tcpConnectionTimeout 		= dict( type = 'int' 	, default = 10 ),
-    httpAuthenticationUserPolicy 	= dict( type = 'str' 	, default = '' ),
-    useChunking 			= dict( type = 'bool' 	, default = False),
-    tcpReadTimeout 			= dict( type = 'int' 	, default = 600 ),
-    enableSSL 				= dict( type = 'bool' 	, default = False),
-    remoteAuthentication 		= dict( type = 'str' 	, default = 'NONE' , choices = ['NONE' , 'STATIC' , 'DYNAMIC' , 'PROPAGATE'] ),
-    processResponse 			= dict( type = 'bool' 	, default = False )
+    name                                = dict( type = 'str'  ),
+    remoteServer			= dict( type = 'str'  ), 
+    remotePort				= dict( type = 'int'  ),
+    enabled				= dict( type = 'bool' ),
+    useBasicAuth 			= dict( type = 'bool' ),
+    proxyPolicy 			= dict( type = 'str'  ),
+    SSLInitiationPolicy 		= dict( type = 'str'  ),
+    tcpConnectionTimeout 		= dict( type = 'int'  ),
+    httpAuthenticationUserPolicy 	= dict( type = 'str'  ),
+    useChunking 			= dict( type = 'bool' ),
+    tcpReadTimeout 			= dict( type = 'int'  ),
+    enableSSL 				= dict( type = 'bool' ),
+    remoteAuthentication 		= dict( type = 'str' , default = 'NONE' , choices = ['NONE' , 'STATIC' , 'DYNAMIC' , 'PROPAGATE'] ),
+    processResponse 			= dict( type = 'bool'  )
   )
 
   module_args.update(forum_sentry_argument_spec)

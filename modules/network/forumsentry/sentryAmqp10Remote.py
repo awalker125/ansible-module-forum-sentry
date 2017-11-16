@@ -8,19 +8,19 @@ from ansible.module_utils.forumsentry import AnsibleForumSentry
 def main():
 
   module_args = dict(
-    name 			= dict( type ='str' ),
-    remoteServer 		= dict( type ='str' ),
-    remotePort 			= dict( type ='int' ),
-    enabled 			= dict( type ='bool'	, default = True ),
-    idleTimeoutMillis 		= dict( type ='int'	, default = 30 ),
-    transferTimeoutMillis 	= dict( type ='int'	, default = 30 ),
-    credentialSource 		= dict( type ='str' 	, default = 'STATIC' , choices = ['STATIC' , 'DYNAMIC' , 'PROPAGATE'] ),
-    userPolicy 			= dict( type ='str'	, default = '' ),
-    useSsl 			= dict( type ='bool'	, default = False ),
-    sslPolicy 			= dict( type ='str'	, default = '' ),
-    saslMechanism 		= dict( type ='str' 	, default = 'NONE' , choices = ['NONE' , 'ANONYMOUS' , 'PLAIN' , 'CRAM_MD5' , 'EXTERNAL'] ),
-    description 		= dict( type ='str'	, default = '' ),
-    processResponse 		= dict( type ='bool'	, default = False ),
+    name 			= dict( type ='str'  ),
+    remoteServer 		= dict( type ='str'  ),
+    remotePort 			= dict( type ='int'  ),
+    enabled 			= dict( type ='bool' ),
+    idleTimeoutMillis 		= dict( type ='int'  ),
+    transferTimeoutMillis 	= dict( type ='int'  ),
+    credentialSource 		= dict( type ='str' , default = 'STATIC' , choices = ['STATIC' , 'DYNAMIC' , 'PROPAGATE'] ),
+    userPolicy 			= dict( type ='str'  ),
+    useSsl 			= dict( type ='bool' ),
+    sslPolicy 			= dict( type ='str'  ),
+    saslMechanism 		= dict( type ='str' , default = 'NONE' , choices = ['NONE' , 'ANONYMOUS' , 'PLAIN' , 'CRAM_MD5' , 'EXTERNAL'] ),
+    description 		= dict( type ='str'  ),
+    processResponse 		= dict( type ='bool' ),
   )
 
   module_args.update( forum_sentry_argument_spec )

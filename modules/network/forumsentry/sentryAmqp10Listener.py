@@ -8,20 +8,20 @@ from ansible.module_utils.forumsentry import AnsibleForumSentry
 def main():
 
   module_args = dict(
-    name 		= dict( type ='str' ),
-    ip 			= dict( type ='str' ),
-    port 		= dict( type ='int'	, default=5672 ),
-    useDeviceIp 	= dict( type ='bool'	, default=True ),
-    enabled 		= dict( type ='bool'	, default=True ),
-    aclPolicy 		= dict( type ='str'	, default='' ),
-    ipAclPolicy 	= dict( type ='str'	, default='' ),
-    readTimeoutMillis 	= dict( type ='int'	, default = 30 ),
-    saslMechanism 	= dict( type ='str' 	, default = 'NONE' , choices = ['NONE' , 'ANONYMOUS' , 'PLAIN' , 'CRAM_MD5' , 'EXTERNAL'] ),
-    useSsl 		= dict( type ='bool'	, default=False ),
-    sslPolicy 		= dict( type ='str'     , default=False ),
-    description 	= dict( type ='str'	, default='' ),
-    interface 		= dict( type ='str' 	, default = 'WAN' , choices = [ 'WAN' , 'LAN' ] ),
-    errorTemplate 	= dict( type ='str'	, default='' )
+    name 		= dict( type ='str'  ),
+    ip 			= dict( type ='str'  ),
+    port 		= dict( type ='int'  ),
+    useDeviceIp 	= dict( type ='bool' ),
+    enabled 		= dict( type ='bool' ),
+    aclPolicy 		= dict( type ='str'  ),
+    ipAclPolicy 	= dict( type ='str'  ),
+    readTimeoutMillis 	= dict( type ='int'  ),
+    saslMechanism 	= dict( type ='str' , default = 'NONE' , choices = ['NONE' , 'ANONYMOUS' , 'PLAIN' , 'CRAM_MD5' , 'EXTERNAL'] ),
+    useSsl 		= dict( type ='bool' ),
+    sslPolicy 		= dict( type ='str'  ),
+    description 	= dict( type ='str'  ),
+    interface 		= dict( type ='str' , default = 'WAN' , choices = [ 'WAN' , 'LAN' ] ),
+    errorTemplate 	= dict( type ='str'  )
   )
 
   module_args.update(forum_sentry_argument_spec)
